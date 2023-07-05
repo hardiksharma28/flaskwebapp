@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Chatbot</h1>
+
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <div id="user-input">
+            <form id="chat-form">
+                <input type="text" id="question-input" placeholder="Ask a question..." />
+                <input type="submit" value="Send" />
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Submit form when user presses enter key
+            $('#question-input').keypress(function(event) {
+                if (event.which === 13) {
+                    event.preventDefault();
+                    $('#chat-form').submit();
+                }
+            });
+
+            // Handle form submission
+            $('#chat-form').submit(function(event) {
+                event.preventDefault();
+                var question = $('#question-input').val().trim();
+
+                if (question !== '') {
+                    // Send question to the server
+                    $.post('/chat', { question: question }, function(data) {
+                        var response = data.response;
+
+                        // Display the chatbot response
+                        $('#chat-log').append('<div class="user-message">User: ' + question + '</div>');
+                        $('#chat-log').append('<div class="bot-message">Bot: ' + response + '</div>');
+
+                        // Clear the input field
+                        $('#question-input').val('');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
